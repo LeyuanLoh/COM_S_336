@@ -98,19 +98,41 @@ int main(int argc, char *argv[])
 
 	cout << endl;
 
-	for (double pixelY = 0; pixelY < 1; pixelY += pixelHeight)
+	
+	
+	double pixelY = 0;
+	double pixelX = 0;
+
+	for (int y = 0; y < resolutionY; y++)
 	{
+		pixelX = 0;
 		printf("\r Progress %.2f percent", (pixelY * 100.0));
 
-		for (double pixelX = 0; pixelX < 1; pixelX += pixelWidth)
+		for (int x = 0; x < resolutionX; x++)
 		{
 			ray *array = cam.getRays(pixelX, pixelY, pixelWidth * 0.9999, pixelHeight * 0.9999, sample_rate);
 
 			myfile << (graphicRender.getPixelColor(array, sample_rate, world, 0.00000000001, double_infinity, bounce) * colorRange).toString() << endl;
 
 			free(array);
+			pixelX += pixelWidth;
 		}
+		pixelY += pixelHeight;
 	}
+	
+// 	for (double pixelY = 0; pixelY < 1; pixelY += pixelHeight)
+// 	{
+// 		printf("\r Progress %.2f percent", (pixelY * 100.0));
+
+// 		for (double pixelX = 0; pixelX < 1; pixelX += pixelWidth)
+// 		{
+// 			ray *array = cam.getRays(pixelX, pixelY, pixelWidth * 0.9999, pixelHeight * 0.9999, sample_rate);
+
+// 			myfile << (graphicRender.getPixelColor(array, sample_rate, world, 0.00000000001, double_infinity, bounce) * colorRange).toString() << endl;
+
+// 			free(array);
+// 		}
+// 	}
 
 	printf("\r Progress 100 percent    ");
 
