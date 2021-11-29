@@ -29,28 +29,21 @@
 #include <GL/glut.h> // OpenGL Graphics Utility Library
 #include "GluCylinders.h"
 
-double jointBaseRadius = 1;
-double jointAHeight = 2;
-double jointBHeight = 4;
-double jointCHeight = 2;
-double jointDHeight = 5;
+#define JOINTBASERADIUS 1
+#define JOINTAHEIGHT  4
+#define JOINTBHEIGHT  4
+#define JOINTCHEIGHT  3
+#define JOINTDHEIGHT 2.5
 
-//rotations of joins (around X first then around Y)
-float jointRotation[4][2] = {{0, 0}, {0, 0}, {0, 0}, {0,0}};
-int RotateAroundXAxisIndex = 0;
-int RotateAroundYAxisIndex = 1;
+//rotations of joins (about y first then about z, then x)
+float jointRotation[4][3] = {{0, 0, 0}, {0, 270, 0}, {0, 0, 0}, {0,0,0}};
 int jointAIndex = 0;
 int jointBIndex = 1;
 int jointCIndex = 2;
 int jointDIndex = 3;
 
-double translations[3] = {0,6,-80.0};
+double translations[3] = {JOINTAHEIGHT,4,-80.0};
 
-bool jointSelection[4] = {false, false, false, false};
-
-// The next global variable controls the animation's state and speed.
-float RotateAroundYAxis = 0.0f; // Angle in degrees of rotation around y-axis
-float RotateAroundXAxis = 90.0; // Rotated up or down by this amount
 
 float AngleStepSize = 3.0f; // Step three degrees at a time
 const float AngleStepMax = 10.0f;
@@ -151,7 +144,6 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 {
 	
 	// printf("Rotate Mode\n");
-	printf("%s%s%s%s\n", jointSelection[jointAIndex] ? "Selected Joint A" : "",  jointSelection[jointBIndex] ? "Selected Joint B" : "",  jointSelection[jointCIndex] ? "Selected Joint C" : "", jointSelection[jointDIndex] ? "Selected Joint D" : "" );
 	switch (key)
 	{
 	// case 'z':
@@ -195,39 +187,39 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 	// 	break;
 	case 'x':
 		translations[0] -= 0.2;
-		glutPostRedisplay();
 		break;
 	case 'X':
 		translations[0] += 0.2;
-		glutPostRedisplay();
 		break;
 	case 'y':
 		translations[1] -= 0.2;
-		glutPostRedisplay();
 		break;
 	case 'Y':
 		translations[1] += 0.2;
-		glutPostRedisplay();
 		break;
 	case 'z':
 		translations[2] -= 0.2;
-		glutPostRedisplay();
 		break;
 	case 'Z':
 		translations[2] += 0.2;
-		glutPostRedisplay();
 		break;
 	case 'u':
+		jointRotation[1][2] += AngleStepSize;
 		break;
 	case 'U':
+		jointRotation[1][2] -= AngleStepSize;	
 		break;
 	case 'v':
+		jointRotation[1][0] += AngleStepSize;
 		break;
 	case 'V':
+		jointRotation[1][0] -= AngleStepSize;
 		break;
 	case 'w':
-		break;
+		jointRotation[1][1] += AngleStepSize;
+		break;	
 	case 'W':
+		jointRotation[1][1] -= AngleStepSize;
 		break;
 	case 'c':
 		break;
@@ -276,34 +268,8 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 	case 27: // Escape key
 		exit(1);
 	}
-}
-
-// glutSpecialFunc is called below to set this function to handle
-//		all "special" key presses.  See glut.h for the names of
-//		special keys.
-void mySpecialKeyFunc(int key, int x, int y)
-{
-	if (jointSelection[jointAIndex] || jointSelection[jointBIndex] || jointSelection[jointCIndex] || jointSelection[jointDIndex])
-	{//If in one of the joint rotation mode then rotate joints
-		if (jointSelection[jointAIndex])
-		{
-			rotateJoint(jointAIndex, key);
-		}
-		if (jointSelection[jointBIndex])
-		{
-			rotateJoint(jointBIndex, key);
-		}
-		if (jointSelection[jointCIndex])
-		{
-			rotateJoint(jointCIndex, key);
-		}
-		if (jointSelection[jointDIndex])
-		{
-			rotateJoint(jointDIndex, key);
-		}
-		return;
-	}
 	glutPostRedisplay();
+
 }
 
 /*
@@ -315,25 +281,25 @@ void drawScene(void)
 	// Clear the rendering window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Rotate the image
+	// Rotate the image`
 	glMatrixMode(GL_MODELVIEW); // Current matrix affects objects positions
 	glLoadIdentity();			// Initialize to the identity
 
 	//This is for the position of the objects
 	glTranslatef(translations[0], translations[1], translations[2]);					 // Translate  from origin (in front of viewer)
-	glRotatef(RotateAroundYAxis, 0.0, 1.0, 0.0); // Rotate around y-axis
-	glRotatef(RotateAroundXAxis, 1.0, 0.0, 0.0); // Set RotateAroundXAxis angle
+	glRotatef(90, 1.0, 0.0, 0.0);
 
 	//If disabled, then you can see the color from both sides
 	glDisable(GL_CULL_FACE);
 	//The first push load in the current matrix for the relative position of the arm entity
 	// glPushMatrix();
 	glTranslatef(0, 0.0, 0.0);
-	glRotatef(jointRotation[jointAIndex][0], 1.0, 0.0, 0.0);
-	glRotatef(jointRotation[jointAIndex][1], 0.0, 1.0, 0.0);
+	glRotatef(180, 1.0, 0.0, 0.0);
+	glRotatef(270, 0.0, 1.0, 0.0);
+	glRotatef(0.0, 0.0, 0.0, 1.0);
 	glColor3f(0.2, 1.0, 0.2); // Greenish color
 	// Parameters: height, base radius, top radius, slices, stacks
-	drawArmJoint(jointAHeight, jointBaseRadius, 32, 32);
+	drawArmJoint(JOINTAHEIGHT, JOINTBASERADIUS, 32, 32);
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
 	// glPopMatrix();
 
@@ -341,12 +307,13 @@ void drawScene(void)
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
 	// glPushMatrix();
-	glTranslatef(0, 0.0, jointAHeight);
-	glRotatef(jointRotation[jointBIndex][0], 1.0, 0.0, 0.0);
+	glTranslatef(0, 0.0, JOINTAHEIGHT);
+	glRotatef(jointRotation[jointBIndex][2], 1.0, 0.0, 0.0);
 	glRotatef(jointRotation[jointBIndex][1], 0.0, 1.0, 0.0);
+	glRotatef(jointRotation[jointBIndex][0], 0.0, 0.0, 1.0);
 	glColor3f(1.0, 0.2, 0.2); // Reddish color
 	// Parameters: height, radius, slices, stacks
-	drawArmJoint(jointBHeight, jointBaseRadius, 32, 32);
+	drawArmJoint(JOINTBHEIGHT, JOINTBASERADIUS, 32, 32);
 
 	//This function duplicating the current matrix of the object on the stack to the object below
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
@@ -356,12 +323,13 @@ void drawScene(void)
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
 	// glPushMatrix();
-	glTranslatef(0, 0.0, jointBHeight);
-	glRotatef(jointRotation[jointCIndex][0], 1.0, 0.0, 0.0);
+	glTranslatef(0, 0.0, JOINTBHEIGHT);
+	glRotatef(jointRotation[jointCIndex][2], 1.0, 0.0, 0.0);
 	glRotatef(jointRotation[jointCIndex][1], 0.0, 1.0, 0.0);
+	glRotatef(jointRotation[jointCIndex][0], 0.0, 0.0, 1.0);
 	glColor3f(1.0, 0.5, 0.0); // Orange color
 	// Parameters: height, radius, slices, stacks
-	drawArmJoint(jointCHeight, jointBaseRadius, 32, 32);
+	drawArmJoint(JOINTCHEIGHT, JOINTBASERADIUS, 32, 32);
 
 	//This function duplicating the current matrix of the object on the stack to the object below
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
@@ -373,12 +341,13 @@ void drawScene(void)
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
 	// glPushMatrix();
-	glTranslatef(0, 0.0, jointCHeight);
-	glRotatef(jointRotation[jointDIndex][0], 1.0, 0.0, 0.0);
+	glTranslatef(0, 0.0, JOINTCHEIGHT);
+	glRotatef(jointRotation[jointDIndex][2], 1.0, 0.0, 0.0);
 	glRotatef(jointRotation[jointDIndex][1], 0.0, 1.0, 0.0);
+	glRotatef(jointRotation[jointDIndex][0], 0.0, 0.0, 1.0);
 	glColor3f(0.5, 0, 0.5); // Purple color
 	// Parameters: height, radius, slices, stacks
-	drawArmJoint(jointDHeight, jointBaseRadius, 32, 32);
+	drawArmJoint(JOINTDHEIGHT, JOINTBASERADIUS, 32, 32);
 
 	//This function duplicating the current matrix of the object on the stack to the object below
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
@@ -442,7 +411,6 @@ int main(int argc, char **argv)
 
 	// Set up callback functions for key presses
 	glutKeyboardFunc(myKeyboardFunc);  // Handles "normal" ascii symbols
-	glutSpecialFunc(mySpecialKeyFunc); // Handles "special" keyboard keys
 
 	// Set up the callback function for resizing windows
 	glutReshapeFunc(resizeWindow);
