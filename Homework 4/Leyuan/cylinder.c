@@ -79,10 +79,12 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
-    glTranslatef(0.0,-0.4,-3.0);
-    glRotatef(-40, 1.0, 0.0, 0.0);
+	glTranslatef(0, 6, -80.0);					 // Translate  from origin (in front of viewer)
+    glRotatef(90, 1.0, 0.0, 0.0);
+    glDisable(GL_CULL_FACE);
 
-    draw_cylinder(0.3, 1.0, 255, 160, 100);
+    
+    draw_cylinder(2,4, 255, 160, 100);
 
     glFlush();
 }
@@ -102,8 +104,8 @@ void reshape(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(40.0, (GLdouble)width/(GLdouble)height,
-                   0.5, 20.0);
+    gluPerspective(15.0, (GLdouble)width/(GLdouble)height,
+                   25.0, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, width, height);
@@ -114,7 +116,7 @@ int main(int argc, char **argv)
     /** Initialize glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(640,480);
+    glutInitWindowSize(900,900);
     glutCreateWindow("Create Cylinder");
     glClearColor(0.0,0.0,0.0,0.0);
     glutDisplayFunc(display);
