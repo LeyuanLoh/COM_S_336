@@ -35,6 +35,10 @@
 #define JOINTCHEIGHT  3
 #define JOINTDHEIGHT 2.5
 
+#define X 0 
+#define Y 1
+#define Z 2
+
 //rotations of joins (about y first then about z, then x)
 float jointRotation[4][3] = {{0, 0, 0}, {0, 270, 0}, {0, 0, 0}, {0,0,0}};
 int jointAIndex = 0;
@@ -146,45 +150,6 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 	// printf("Rotate Mode\n");
 	switch (key)
 	{
-	// case 'z':
-	// 	//Switching to rotating joint A mode
-	// 	if (jointSelection[jointAIndex])
-	// 	{
-	// 		jointSelection[jointAIndex] = false;
-	// 		break;
-	// 	}
-	// 	jointSelection[jointAIndex] = true;
-	// 	break;
-
-	// case 'x':
-	// 	//Switching to rotating joint B mode
-	// 	if (jointSelection[jointBIndex])
-	// 	{
-	// 		jointSelection[jointBIndex] = false;
-	// 		break;
-	// 	}
-	// 	jointSelection[jointBIndex] = true;
-	// 	break;
-
-	// case 'c':
-	// 	//Switching to rotating joint C mode
-	// 	if (jointSelection[jointCIndex])
-	// 	{
-	// 		jointSelection[jointCIndex] = false;
-	// 		break;
-	// 	}
-	// 	jointSelection[jointCIndex] = true;
-	// 	break;
-
-	// case 'v':
-	// 	//Switching to rotating joint C mode
-	// 	if (jointSelection[jointDIndex])
-	// 	{
-	// 		jointSelection[jointDIndex] = false;
-	// 		break;
-	// 	}
-	// 	jointSelection[jointDIndex] = true;
-	// 	break;
 	case 'x':
 		translations[0] -= 0.2;
 		break;
@@ -204,67 +169,74 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 		translations[2] += 0.2;
 		break;
 	case 'u':
-		jointRotation[1][2] += AngleStepSize;
+		jointRotation[jointBIndex][X] += AngleStepSize;
 		break;
 	case 'U':
-		jointRotation[1][2] -= AngleStepSize;	
+		jointRotation[jointBIndex][X] -= AngleStepSize;	
 		break;
 	case 'v':
-		jointRotation[1][0] += AngleStepSize;
+		jointRotation[jointBIndex][Y] += AngleStepSize;
 		break;
 	case 'V':
-		jointRotation[1][0] -= AngleStepSize;
+		jointRotation[jointBIndex][Y] -= AngleStepSize;
 		break;
 	case 'w':
-		jointRotation[1][1] += AngleStepSize;
+		jointRotation[jointBIndex][Z] += AngleStepSize;
 		break;	
 	case 'W':
-		jointRotation[1][1] -= AngleStepSize;
+		jointRotation[jointBIndex][Z] -= AngleStepSize;
 		break;
 	case 'c':
+		jointRotation[jointCIndex][X] += AngleStepSize;
 		break;
 	case 'C':
+		jointRotation[jointCIndex][X] -= AngleStepSize;
 		break;
 	case 'r':
+		jointRotation[jointCIndex][Z] += AngleStepSize;
 		break;
 	case 'R':
+		jointRotation[jointCIndex][Z] -= AngleStepSize;
 		break;
 	case 'p':
+		jointRotation[jointDIndex][X] += AngleStepSize;
 		break;
 	case 'P':
+		jointRotation[jointDIndex][X] -= AngleStepSize;
 		break;
 	case 'a':
+		jointRotation[jointDIndex][Y] += AngleStepSize;
 		break;
 	case 'A':
+		jointRotation[jointDIndex][Y] -= AngleStepSize;
 		break;
 	case 'o':
 		break;
-	// case 'w':
-	// 	WireFrameOn = 1 - WireFrameOn;
-	// 	if (WireFrameOn)
-	// 	{
-	// 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Just show wireframes
-	// 	}
-	// 	else
-	// 	{
-	// 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Show solid polygons
-	// 	}
-	// 	glutPostRedisplay();
-	// 	break;
-	// case 'R':
-	// 	AngleStepSize *= 1.5;
-	// 	if (AngleStepSize > AngleStepMax)
-	// 	{
-	// 		AngleStepSize = AngleStepMax;
-	// 	}
-	// 	break;
-	// case 'r':
-	// 	AngleStepSize /= 1.5;
-	// 	if (AngleStepSize < AngleStepMin)
-	// 	{
-	// 		AngleStepSize = AngleStepMin;
-	// 	}
-	// 	break;
+	case '1':
+		WireFrameOn = 1 - WireFrameOn;
+		if (WireFrameOn)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Just show wireframes
+		}
+		else
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Show solid polygons
+		}
+		break;
+	case '2':
+		AngleStepSize *= 1.5;
+		if (AngleStepSize > AngleStepMax)
+		{
+			AngleStepSize = AngleStepMax;
+		}
+		break;
+	case '3':
+		AngleStepSize /= 1.5;
+		if (AngleStepSize < AngleStepMin)
+		{
+			AngleStepSize = AngleStepMin;
+		}
+		break;
 	case 27: // Escape key
 		exit(1);
 	}
@@ -287,12 +259,11 @@ void drawScene(void)
 
 	//This is for the position of the objects
 	glTranslatef(translations[0], translations[1], translations[2]);					 // Translate  from origin (in front of viewer)
-	glRotatef(90, 1.0, 0.0, 0.0);
+	glRotatef(0, 1.0, 0.0, 0.0);
 
 	//If disabled, then you can see the color from both sides
 	glDisable(GL_CULL_FACE);
 	//The first push load in the current matrix for the relative position of the arm entity
-	// glPushMatrix();
 	glTranslatef(0, 0.0, 0.0);
 	glRotatef(180, 1.0, 0.0, 0.0);
 	glRotatef(270, 0.0, 1.0, 0.0);
@@ -303,14 +274,21 @@ void drawScene(void)
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
 	// glPopMatrix();
 
+	glPushMatrix();
+	GLUquadric *quad;
+	glTranslatef(0,0,4);
+	glColor3f(0.8, 1.0, 0.2);
+	quad = gluNewQuadric();
+	gluSphere(quad,1,100,20);
+	glPopMatrix();
+
 	//If disabled, then you can see the color from both sides, or in and out
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
-	// glPushMatrix();
 	glTranslatef(0, 0.0, JOINTAHEIGHT);
-	glRotatef(jointRotation[jointBIndex][2], 1.0, 0.0, 0.0);
-	glRotatef(jointRotation[jointBIndex][1], 0.0, 1.0, 0.0);
-	glRotatef(jointRotation[jointBIndex][0], 0.0, 0.0, 1.0);
+	glRotatef(jointRotation[jointBIndex][Y], 1.0, 0.0, 0.0);
+	glRotatef(jointRotation[jointBIndex][X], 0.0, 1.0, 0.0);
+	glRotatef(jointRotation[jointBIndex][Z], 0.0, 0.0, 1.0);
 	glColor3f(1.0, 0.2, 0.2); // Reddish color
 	// Parameters: height, radius, slices, stacks
 	drawArmJoint(JOINTBHEIGHT, JOINTBASERADIUS, 32, 32);
@@ -319,14 +297,14 @@ void drawScene(void)
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
 	// glPopMatrix();
 
+
+
 	//If disabled, then you can see the color from both sides, or in and out
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
-	// glPushMatrix();
 	glTranslatef(0, 0.0, JOINTBHEIGHT);
-	glRotatef(jointRotation[jointCIndex][2], 1.0, 0.0, 0.0);
-	glRotatef(jointRotation[jointCIndex][1], 0.0, 1.0, 0.0);
-	glRotatef(jointRotation[jointCIndex][0], 0.0, 0.0, 1.0);
+	glRotatef(jointRotation[jointCIndex][X], 0.0, 1.0, 0.0);
+	glRotatef(jointRotation[jointCIndex][Z], 0.0, 0.0, 1.0);
 	glColor3f(1.0, 0.5, 0.0); // Orange color
 	// Parameters: height, radius, slices, stacks
 	drawArmJoint(JOINTCHEIGHT, JOINTBASERADIUS, 32, 32);
@@ -340,18 +318,15 @@ void drawScene(void)
 	//If disabled, then you can see the color from both sides, or in and out
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
-	// glPushMatrix();
 	glTranslatef(0, 0.0, JOINTCHEIGHT);
-	glRotatef(jointRotation[jointDIndex][2], 1.0, 0.0, 0.0);
-	glRotatef(jointRotation[jointDIndex][1], 0.0, 1.0, 0.0);
-	glRotatef(jointRotation[jointDIndex][0], 0.0, 0.0, 1.0);
+	glRotatef(jointRotation[jointDIndex][Y], 1.0, 0.0, 0.0);
+	glRotatef(jointRotation[jointDIndex][X], 0.0, 1.0, 0.0);
 	glColor3f(0.5, 0, 0.5); // Purple color
 	// Parameters: height, radius, slices, stacks
 	drawArmJoint(JOINTDHEIGHT, JOINTBASERADIUS, 32, 32);
 
 	//This function duplicating the current matrix of the object on the stack to the object below
 	//Popping replacing the current matrix with the one below it, essentially wiping out position data of the first joint
-	// glPopMatrix();
 
 
 	// Flush the pipeline, swap the buffers
