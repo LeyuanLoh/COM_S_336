@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(-W/2, W/2, -H/2, H/2, 1, -1);
+  glOrtho(-W/2, W/2, -H/2, H/2, 10090, -10000);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 

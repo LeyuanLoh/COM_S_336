@@ -35,6 +35,9 @@
 #define JOINTCHEIGHT  3
 #define JOINTDHEIGHT 2.5
 
+#define WIDTH 900
+#define HEIGHT 900
+
 #define X 0 
 #define Y 1
 #define Z 2
@@ -54,6 +57,8 @@ const float AngleStepMax = 10.0f;
 const float AngleStepMin = 0.1f;
 
 int WireFrameOn = 1; // == 1 for wire frame mode
+
+int ortho = 1;
 
 // ************************************************************************
 // These are four general purpose routines for generating
@@ -146,6 +151,7 @@ void rotateJoint(int jointIndex, int key)
 //		all "normal" key presses.
 void myKeyboardFunc(unsigned char key, int x, int y)
 {
+	printf("Key: %c\n", key);
 	
 	// printf("Rotate Mode\n");
 	switch (key)
@@ -211,6 +217,10 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 		jointRotation[jointDIndex][Y] -= AngleStepSize;
 		break;
 	case 'o':
+		ortho = ortho == 0? 1:0;
+		resizeWindow(WIDTH,HEIGHT);
+		printf("Ortho : %d\n", ortho);
+		return;
 		break;
 	case '1':
 		WireFrameOn = 1 - WireFrameOn;
@@ -351,20 +361,32 @@ void resizeWindow(int w, int h)
 {
 	double aspectRatio;
 
-	// Define the portion of the window used for OpenGL rendering.
-	glViewport(0, 0, w, h); // View port uses whole window
-
-	// Set up the projection view matrix: perspective projection
-	// Determine the min and max values for x and y that should appear in the window.
-	// The complication is that the aspect ratio of the window may not match the
-	//		aspect ratio of the scene we want to view.
-	w = (w == 0) ? 1 : w;
-	h = (h == 0) ? 1 : h;
-	aspectRatio = (double)w / (double)h;
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
 	//Aspect ratio + view distance (depth - last paramter)
-	gluPerspective(15.0, aspectRatio, 25.0, 100.0);
+	if(ortho == 0){
+			// Define the portion of the window used for OpenGL rendering.
+		glViewport(0, 0, w, h); // View port uses whole window
+
+		// Set up the projection view matrix: perspective projection
+		// Determine the min and max values for x and y that should appear in the window.
+		// The complication is that the aspect ratio of the window may not match the
+		//		aspect ratio of the scene we want to view.
+		w = (w == 0) ? 1 : w;
+		h = (h == 0) ? 1 : h;
+		aspectRatio = (double)w / (double)h;
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		printf("Perspective\n");
+		gluPerspective(15.0, aspectRatio, 50.0, 100.0);
+	}else{
+		glViewport(0, 0, w, h); // View port uses whole window
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		printf("Ortho\n");
+		glOrtho(-WIDTH/80, WIDTH/80, -HEIGHT/80, HEIGHT/80, 100, -100);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
+	
 }
 
 // Main routine
@@ -377,8 +399,8 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
 	// Window position (from top corner), and size (width% and hieght)
-	glutInitWindowPosition(10, 60);
-	glutInitWindowSize(900, 900);
+	// glutInitWindowPosition(0, 0);
+	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("GluCylinders");
 
 	// Initialize OpenGL as we like it..
