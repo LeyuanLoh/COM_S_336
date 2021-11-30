@@ -43,7 +43,7 @@
 #define Z 2
 
 //rotations of joins (about y first then about z, then x)
-float jointRotation[4][3] = {{0, 0, 0}, {0, 270, 0}, {0, 0, 0}, {0,0,0}};
+float jointRotation[4][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0,0,0}};
 int jointAIndex = 0;
 int jointBIndex = 1;
 int jointCIndex = 2;
@@ -151,7 +151,6 @@ void rotateJoint(int jointIndex, int key)
 //		all "normal" key presses.
 void myKeyboardFunc(unsigned char key, int x, int y)
 {
-	printf("Key: %c\n", key);
 	
 	// printf("Rotate Mode\n");
 	switch (key)
@@ -175,83 +174,95 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 		translations[2] += 0.2;
 		break;
 	case 'u':
+    //Swing the arm up right
 		jointRotation[jointBIndex][X] += AngleStepSize;
-		if (jointRotation[jointBIndex][X] > 50.0f)
+		if (jointRotation[jointBIndex][X] > 360.0f)
 		{
-			jointRotation[jointBIndex][X] = 50.0f;
+			jointRotation[jointBIndex][X] -= 360.0f;
 		}
 		break;
 	case 'U':
+    //Swing the arm down
 		jointRotation[jointBIndex][X] -= AngleStepSize;	
-			if (jointRotation[jointBIndex][X] < -50.0f)
+			if (jointRotation[jointBIndex][X] < -360.0f)
 		{
-			jointRotation[jointBIndex][X] = -50.0f;
+			jointRotation[jointBIndex][X] += 360.0f;
 		}
 		break;
 	case 'v':
+    //Rotating the arm outside the body
 		jointRotation[jointBIndex][Y] += AngleStepSize;
-			if (jointRotation[jointBIndex][Y] > 50.0f)
+			if (jointRotation[jointBIndex][Y] > 200.0f)
 		{
-			jointRotation[jointBIndex][Y] = 50.0f;
+			jointRotation[jointBIndex][Y] = 200.0f;
 		}
 		break;
 	case 'V':
+    //Rotating the arm into the body
 		jointRotation[jointBIndex][Y] -= AngleStepSize;
-			if (jointRotation[jointBIndex][Y] < -50.0f)
+			if (jointRotation[jointBIndex][Y] < -25.0f)
 		{
-			jointRotation[jointBIndex][Y] = -50.0f;
+			jointRotation[jointBIndex][Y] = -25.0f;
 		}
 		break;
 	case 'w':
+    //Twist the arm
 		jointRotation[jointBIndex][Z] += AngleStepSize;
-			if (jointRotation[jointBIndex][Z] > 50.0f)
+			if (jointRotation[jointBIndex][Z] > 35.0f)
 		{
-			jointRotation[jointBIndex][Z] = 50.0f;
+			jointRotation[jointBIndex][Z] = 35.0f;
 		}
 		break;	
 	case 'W':
+    //Twist the arm
 		jointRotation[jointBIndex][Z] -= AngleStepSize;
-			if (jointRotation[jointBIndex][Z] < -50.0f)
+			if (jointRotation[jointBIndex][Z] < -35.0f)
 		{
-			jointRotation[jointBIndex][Z] = -50.0f;
+			jointRotation[jointBIndex][Z] = -35.0f;
 		}
 		break;
 	case 'c':
+    //Curling the forearm inward
 		jointRotation[jointCIndex][X] += AngleStepSize;
-			if (jointRotation[jointCIndex][X] > 50.0f)
+			if (jointRotation[jointCIndex][X] > 160.0f)
 		{
-			jointRotation[jointCIndex][X] = 50.0f;
+			jointRotation[jointCIndex][X] = 160.0f;
 		}
 		break;
 	case 'C':
+    //Uncurl the forearm
 		jointRotation[jointCIndex][X] -= AngleStepSize;
-			if (jointRotation[jointCIndex][X] < -50.0f)
+			if (jointRotation[jointCIndex][X] < 0.0f)
 		{
-			jointRotation[jointCIndex][X] = -50.0f;
+			jointRotation[jointCIndex][X] = 0.0f;
 		}
 		break;
 	case 'r':
+    //Twist the forearm
 		jointRotation[jointCIndex][Z] += AngleStepSize;
-			if (jointRotation[jointCIndex][Z] > 50.0f)
+			if (jointRotation[jointCIndex][Z] > 35.0f)
 		{
-			jointRotation[jointCIndex][Z] = 50.0f;
+			jointRotation[jointCIndex][Z] = 35.0f;
 		}
 		break;
 	case 'R':
+    //Twist the forearm
 		jointRotation[jointCIndex][Z] -= AngleStepSize;
-			if (jointRotation[jointCIndex][Z] < -50.0f)
+			if (jointRotation[jointCIndex][Z] < -35.0f)
 		{
-			jointRotation[jointCIndex][Z] = -50.0f;
+			jointRotation[jointCIndex][Z] = -35.0f;
 		}
 		break;
 	case 'p':
+    //Curl the hand at the wrist inward
 		jointRotation[jointDIndex][X] += AngleStepSize;
-			if (jointRotation[jointDIndex][X] > 50.0f)
+			if (jointRotation[jointDIndex][X] > 90.0f)
 		{
-			jointRotation[jointDIndex][X] = 50.0f;
+			jointRotation[jointDIndex][X] = 90.0f;
 		}
 		break;
 	case 'P':
+    //Uncurl the hand
 		jointRotation[jointDIndex][X] -= AngleStepSize;
 			if (jointRotation[jointDIndex][X] < -50.0f)
 		{
@@ -352,6 +363,8 @@ void drawScene(void)
 	glDisable(GL_CULL_FACE);
 	//Dont need to push cause we are reusing the previous joint position
 	glTranslatef(0, 0.0, JOINTAHEIGHT);
+    
+	glRotatef(270, 1.0, 0.0, 0.0);
 	glRotatef(jointRotation[jointBIndex][Y], 1.0, 0.0, 0.0);
 	glRotatef(jointRotation[jointBIndex][X], 0.0, 1.0, 0.0);
 	glRotatef(jointRotation[jointBIndex][Z], 0.0, 0.0, 1.0);
@@ -474,18 +487,39 @@ int main(int argc, char **argv)
 	// call this whenever window needs redrawing
 	glutDisplayFunc(drawScene);
 
-	fprintf(stdout, "Arrow keys control viewpoint.\n");
-	fprintf(stdout, "Press \"w\" to toggle wireframe mode.\n");
-	fprintf(stdout, "Press \"R\" or \"r\" to increase or decrease rate of movement (respectively).\n");
-	fprintf(stdout, "Press \"z\" to toggle joint rotation mode for joint A (green)\n");
-	fprintf(stdout, "Press \"x\" to toggle joint rotation mode for joint B (orange)\n");
-	fprintf(stdout, "Press \"c\" to toggle joint rotation mode for joint C (yellow)\n");
-	fprintf(stdout, "Press \"v\" to toggle joint rotation mode for joint C (purple)\n");
+    fprintf(stdout, "x: Translate the arm in the world-space negative x direction.\n");
+    fprintf(stdout, "X: Translate the arm in the world-space positive x direction.\n");
+    fprintf(stdout, "y: Translate the arm in the world-space negative y direction.\n");
+    fprintf(stdout, "Y: Translate the arm in the world-space positive y direction.\n");
+    fprintf(stdout, "z: Translate the arm in the world-space negative z direction.\n");
+    fprintf(stdout, "Z: Translate the arm in the world-space positive z direction.\n");
+    fprintf(stdout, "u: Rotate the arm at the shoulder about the upper arm's x axis in the positive direction.\n");
+    fprintf(stdout, "U: Rotate the arm at the shoulder about the upper arm's x axis in the negative direction.\n");
+    fprintf(stdout, "v: Rotate the arm at the shoulder about the upper arm's y axis in the positive direction.\n");
+    fprintf(stdout, "V: Rotate the arm at the shoulder about the upper arm's y axis in the negative direction.\n");
+    fprintf(stdout, "w: Rotate the arm at the shoulder about the upper arm's z axis in the positive direction.\n");
+    fprintf(stdout, "W: Rotate the arm at the shoulder about the upper arm's z axis in the negative direction.\n");
+    fprintf(stdout, "c: Curl the forearm at the elbow about the forearm's x axis in the positive direction.\n");
+    fprintf(stdout, "C: Curl the forearm at the elbow about the forearm's x axis in the negative direction.\n");
+    fprintf(stdout, "r: Rotate the forearm at the elbow about the forearm's z axis in the positive direction.\n");
+    fprintf(stdout, "R: Rotate the forearm at the elbow about the forearm's z axis in the negative direction.\n");
+    fprintf(stdout, "p: Pitch the hand at the wrist about the hand's x axis in the positive direction.\n");
+    fprintf(stdout, "P: Pitch the hand at the wrist about the hand's x axis in the negative direction.\n");
+    fprintf(stdout, "a: yAw the hand at the wrist about the hand's y axis in the positive direction.\n");
+    fprintf(stdout, "A: yAw the hand at the wrist about the hand's y axis in the negative direction.\n");
+    fprintf(stdout, "o: Toggle orthographic/perspective projection.\n");
+    
+	// fprintf(stdout, "Arrow keys control viewpoint.\n");
+	// fprintf(stdout, "Press \"w\" to toggle wireframe mode.\n");
+	// fprintf(stdout, "Press \"R\" or \"r\" to increase or decrease rate of movement (respectively).\n");
+	// fprintf(stdout, "Press \"z\" to toggle joint rotation mode for joint A (green)\n");
+	// fprintf(stdout, "Press \"x\" to toggle joint rotation mode for joint B (orange)\n");
+	// fprintf(stdout, "Press \"c\" to toggle joint rotation mode for joint C (yellow)\n");
+	// fprintf(stdout, "Press \"v\" to toggle joint rotation mode for joint C (purple)\n");
 
 	// Start the main loop.  glutMainLoop never returns.
 	glutMainLoop();
 
 	return (0); // This line is never reached.
 }
-
 
