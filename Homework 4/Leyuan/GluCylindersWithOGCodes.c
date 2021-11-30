@@ -176,45 +176,101 @@ void myKeyboardFunc(unsigned char key, int x, int y)
 		break;
 	case 'u':
 		jointRotation[jointBIndex][X] += AngleStepSize;
+		if (jointRotation[jointBIndex][X] > 50.0f)
+		{
+			jointRotation[jointBIndex][X] = 50.0f;
+		}
 		break;
 	case 'U':
 		jointRotation[jointBIndex][X] -= AngleStepSize;	
+			if (jointRotation[jointBIndex][X] < -50.0f)
+		{
+			jointRotation[jointBIndex][X] = -50.0f;
+		}
 		break;
 	case 'v':
 		jointRotation[jointBIndex][Y] += AngleStepSize;
+			if (jointRotation[jointBIndex][Y] > 50.0f)
+		{
+			jointRotation[jointBIndex][Y] = 50.0f;
+		}
 		break;
 	case 'V':
 		jointRotation[jointBIndex][Y] -= AngleStepSize;
+			if (jointRotation[jointBIndex][Y] < -50.0f)
+		{
+			jointRotation[jointBIndex][Y] = -50.0f;
+		}
 		break;
 	case 'w':
 		jointRotation[jointBIndex][Z] += AngleStepSize;
+			if (jointRotation[jointBIndex][Z] > 50.0f)
+		{
+			jointRotation[jointBIndex][Z] = 50.0f;
+		}
 		break;	
 	case 'W':
 		jointRotation[jointBIndex][Z] -= AngleStepSize;
+			if (jointRotation[jointBIndex][Z] < -50.0f)
+		{
+			jointRotation[jointBIndex][Z] = -50.0f;
+		}
 		break;
 	case 'c':
 		jointRotation[jointCIndex][X] += AngleStepSize;
+			if (jointRotation[jointCIndex][X] > 50.0f)
+		{
+			jointRotation[jointCIndex][X] = 50.0f;
+		}
 		break;
 	case 'C':
 		jointRotation[jointCIndex][X] -= AngleStepSize;
+			if (jointRotation[jointCIndex][X] < -50.0f)
+		{
+			jointRotation[jointCIndex][X] = -50.0f;
+		}
 		break;
 	case 'r':
 		jointRotation[jointCIndex][Z] += AngleStepSize;
+			if (jointRotation[jointCIndex][Z] > 50.0f)
+		{
+			jointRotation[jointCIndex][Z] = 50.0f;
+		}
 		break;
 	case 'R':
 		jointRotation[jointCIndex][Z] -= AngleStepSize;
+			if (jointRotation[jointCIndex][Z] < -50.0f)
+		{
+			jointRotation[jointCIndex][Z] = -50.0f;
+		}
 		break;
 	case 'p':
 		jointRotation[jointDIndex][X] += AngleStepSize;
+			if (jointRotation[jointDIndex][X] > 50.0f)
+		{
+			jointRotation[jointDIndex][X] = 50.0f;
+		}
 		break;
 	case 'P':
 		jointRotation[jointDIndex][X] -= AngleStepSize;
+			if (jointRotation[jointDIndex][X] < -50.0f)
+		{
+			jointRotation[jointDIndex][X] = -50.0f;
+		}
 		break;
 	case 'a':
 		jointRotation[jointDIndex][Y] += AngleStepSize;
+			if (jointRotation[jointDIndex][Y] > 50.0f)
+		{
+			jointRotation[jointDIndex][Y] = 50.0f;
+		}
 		break;
 	case 'A':
 		jointRotation[jointDIndex][Y] -= AngleStepSize;
+			if (jointRotation[jointDIndex][Y] < -50.0f)
+		{
+			jointRotation[jointDIndex][Y] = -50.0f;
+		}
 		break;
 	case 'o':
 		ortho = ortho == 0? 1:0;
